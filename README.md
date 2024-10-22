@@ -1,19 +1,18 @@
-
-the accessor syntax defines some subset of data provided by the symbol
+# Language feature ideas
+## Symbols and accessors
+Symbols can have different implementation depending on the context and os, but they always have the same meaning and outcome.
+Symbol definitions should be only used for clarity.
 ```python
-file("data.json").contents
+today: system.time.now.date
+```
+The accessor syntax defines some subset of data provided by the symbol.
+```python
+file("data.json").content
 ```
 
-You can emulate "the chain" using pattern matching
+## Data transormation - map, take, filter
+Declarative way of defining data transormation.
 ```python
-# The imperative way to do it
-posts
-    sanitize :: {.success, ...}
-    filter _.published is today
-    take 5
-    map a(_.link)
-
-# Fuck this is perfect
 5 sanitized(posts) as a(_.link) where _.published is today
 
 
@@ -25,10 +24,7 @@ posts
     {published: today, link: "/4"},
     {published: today, link: "/5"},
     {published: today, link: "/6"},
-}
-#)
-
-(# => {
+} => {
     "<a href=\"/2\">",
     "<a href=\"/3\">",
     "<a href=\"/4\">",
@@ -37,19 +33,15 @@ posts
 }
 #)
 ```
-symbol definitions should be only used for clarity
-```python
-today: system.time.now.date
-```
-functions are just transformers of data where the type can be entirely discerned from the body.
-they should be ideally without side effects. The type information is also really extensive, including side effects
+## Functions - transformers
+Functions are just transformers of data where the type can be entirely discerned from the body.
+they should be ideally without side effects. The type information is also really extensive, including side effects, potentional paths the function can take and much more.
 ```python
 sanitized posts:
-    posts as escaped_html(_)
+    posts as escaped_html(_) # Uses the escape_html() transformation on every post
 ```
-compiler has a "symbol resolver" that actually resolves the symbols and decides on implementations based on context.
 
-Data types
+## Data types
 ```python
 # Table
 {1, 2, 3, four: 4}
@@ -60,12 +52,9 @@ Data types
 # Logic value
 True
 False
-
 ```
 
-all transformations without side effects will be computed at compile time
-
-comments
+## Comments
 ```python
 # A comment
 (#
@@ -73,4 +62,18 @@ Multiline
 comment
 #)
 ```
-figure out logic
+## Control flow
+```python
+# If expression
+customer_dashboard() if user.costumer else dashboard()
+```
+# Rejected ideas
+- imperative language
+```python
+posts
+    sanitize :: {.success, ...}
+    filter _.published is today
+    take 5
+    map a(_.link)
+
+```
