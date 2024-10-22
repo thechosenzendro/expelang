@@ -1,21 +1,11 @@
-symbols are just hints, the compiler decides what to do with them
-
-```
-db.tables.articles filter (_.published is today) map h1(_.header)
-((db.tables.articles) filter (_.published is today)) map h1(_.header)
-
-db.tables.articles
-    filter (_.published is today)
-    map h1(_.header)
-```
 
 the accessor syntax defines some subset of data provided by the symbol
-```
+```python
 file("data.json").contents
 ```
 
 You can emulate "the chain" using pattern matching
-```
+```python
 # The imperative way to do it
 posts
     sanitize :: {.success, ...}
@@ -48,19 +38,19 @@ posts
 #)
 ```
 symbol definitions should be only used for clarity
-```
+```python
 today: system.time.now.date
 ```
 functions are just transformers of data where the type can be entirely discerned from the body.
 they should be ideally without side effects. The type information is also really extensive, including side effects
-```
+```python
 sanitized posts:
     posts as escaped_html(_)
 ```
 compiler has a "symbol resolver" that actually resolves the symbols and decides on implementations based on context.
 
 Data types
-```
+```python
 # Table
 {1, 2, 3, four: 4}
 # Text
@@ -76,7 +66,7 @@ False
 all transformations without side effects will be computed at compile time
 
 comments
-```
+```python
 # A comment
 (#
 Multiline
