@@ -1,4 +1,4 @@
-db: sqlite "dev.db"
+db: sqlite("dev.db")
 posts: db.tables.posts
 
 #(
@@ -19,7 +19,7 @@ new_posts db:
 router path:
     path?
         {"posts", id}: post(posts where &.id is id)
-        {"posts", "new}: new_posts(db)
+        {"posts", "new"}: new_posts(db)
 
 serve(router)
 
