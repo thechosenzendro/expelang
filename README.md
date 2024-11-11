@@ -3,21 +3,25 @@
 Symbols can have different implementation depending on the context and os, but they always have the same meaning and outcome.
 Symbol definitions should be only used for clarity.
 ```python
-today: system.time.now.date
+today: date.now
 ```
 The accessor syntax defines some subset of data provided by the symbol.
 ```python
 file("data.json").content
+
+# Proposed syntax
+file "data.json" . content
 ```
 
-## Data transormation - map, take, filter
-Declarative way of defining data transormation.
+## Data transformation - map, take, filter
+Declarative way of defining data transformation.
 ```python
-5 sanitized(posts) as a(_.link) where _.published is today
+5 sanitized(posts) as a(&.link) where &.published is today
 
 
 # Gets five recent posts and transforms the to html links
-(# posts: {
+(#
+ posts: {
     {published: yesterday, link: "/1"},
     {published: today, link: "/2"},
     {published: today, link: "/3"},
@@ -35,16 +39,32 @@ Declarative way of defining data transormation.
 ```
 ## Functions - transformers
 Functions are just transformers of data where the type can be entirely discerned from the body.
-they should be ideally without side effects. The type information is also really extensive, including side effects, potentional paths the function can take and much more.
+They should be ideally without side effects. The type information is also really extensive, including side effects, potentional paths the function can take and much more.
 ```python
 sanitized posts:
-    posts as escaped_html(_) # Uses the escape_html() transformation on every post
+    posts as escaped_html(&) # Uses the escape_html() transformation on every post
+```
+### Anonymous functions
+using & in an expression creates an anonymous function.
+```python
+posts as escaped_html(&)
+
+error_log: log &, level: critical
+error_log "Uh oh" 
+
+# Proposed syntax
+posts as escaped_html(@)
 ```
 
 ## Data types
 ```python
 # Table
 {1, 2, 3, four: 4}
+Table accessor syntax
+_ . 1
+_ 1
+_ .four
+
 # Text
 "Hello World"
 # Number
@@ -61,19 +81,36 @@ False
 Multiline
 comment
 #)
+
+# Documentation comment example
+# adds one to @a
+add_one a: a + 1
+
 ```
 ## Control flow
+Proposals
 ```python
 # If expression
 customer_dashboard() if user.costumer else dashboard()
-```
-# Rejected ideas
-- imperative language
-```python
-posts
-    sanitize :: {.success, ...}
-    filter _.published is today
-    take 5
-    map a(_.link)
 
+# Question expression
+user.costumer?
+    true: customer_dashboard()
+    dashboard()
+
+# Pattern assert
+(#
+Pattern assert can be used for replacing chain. It asserts that the constant is of some pattern,
+and if it is not, it will return from the block.
+#)
+x :: {hello: "World", ...}
+```
+
+## Blocks
+```python
+x
+    do_something _
+    do_something_else _
+    
+# <- one single expression
 ```
