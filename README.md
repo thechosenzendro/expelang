@@ -70,8 +70,8 @@ _ .four
 # Number
 14.7
 # Logic value
-True
-False
+true
+false
 ```
 
 ## Comments
